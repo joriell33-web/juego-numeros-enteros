@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Z: Números Enteros - Prof. Jorge Ajquí</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Outfit:wght@400;600;700;800;900&family=Pinyon+Script&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- html2canvas para guardar certificado como imagen -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-certificate-name { font-family: 'Pinyon Script', cursive; }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-button {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+        }
+        .glow-button:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 30px rgba(129, 140, 248, 0.6);
+        }
+        .glow-button:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .ctrl-btn {
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .ctrl-btn:active {
+            transform: scale(0.92);
+        }
+
+        .heart-bounce {
+            animation: pulseHeart 1.2s infinite;
+        }
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Custom Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 14px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 10px;
+            border: 1px solid #64748b;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -10px;
+            box-shadow: 0 0 15px #818cf8;
+            border: 2px solid #ffffff;
+        }
+
+        /* Printable Certificate Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #certificate-modal, #certificate-modal * {
+                visibility: visible;
+            }
+            #certificate-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white !important;
+                color: black !important;
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .certificate-container {
+                border: 10px double #b45309 !important;
+                box-shadow: none !important;
+                background: #fffdf5 !important;
+                color: #1e293b !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-3 sm:p-6 overflow-x-hidden">
+
+    <!-- Top Header / Game Bar -->
+    <header class="max-w-4xl mx-auto w-full glass-card rounded-2xl p-4 mb-4 flex flex-wrap justify-between items-center gap-4 border-b border-indigo-500/30">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-500 border border-indigo-300/40 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30">
+                Z
+            </div>
+            <div>
+                <h1 class="font-black text-lg sm:text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
+                    MISIÓN Z: NÚMEROS ENTEROS
+                </h1>
+                <p class="text-xs text-indigo-300 font-semibold flex items-center gap-1.5">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i> Autor: <span class="text-amber-300 font-bold">Prof. Jorge Ajquí</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Status Counters -->
+        <div class="flex items-center gap-4 sm:gap-6">
+            <!-- Level Indicator -->
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] uppercase font-bold text-slate-400">Nivel</span>
+                <span id="level-indicator" class="font-extrabold text-indigo-400 text-lg">1 / 5</span>
+            </div>
+
+            <!-- Score -->
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] uppercase font-bold text-slate-400">Puntos</span>
+                <span id="score-display" class="font-extrabold text-amber-400 text-lg">0</span>
+            </div>
+
+            <!-- Lives -->
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] uppercase font-bold text-slate-400">Vidas</span>
+                <div id="lives-container" class="flex gap-1 text-red-500 text-base">
+                    <i class="fa-solid fa-heart heart-bounce"></i>
+                    <i class="fa-solid fa-heart heart-bounce"></i>
+                    <i class="fa-solid fa-heart heart-bounce"></i>
+                </div>
+            </div>
+
+            <!-- Sound Toggle -->
+            <button id="sound-btn" onclick="toggleSound()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition border border-slate-700 cursor-pointer">
+                <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Overall Progress Bar -->
+    <div class="max-w-4xl mx-auto w-full mb-5">
+        <div class="flex justify-between text-xs text-slate-400 mb-1 px-1 font-semibold">
+            <span>Progreso interactivo del juego</span>
+            <span id="progress-percent" class="text-indigo-400 font-bold">0%</span>
+        </div>
+        <div class="w-full h-3.5 bg-slate-900/90 rounded-full overflow-hidden p-0.5 border border-slate-700/80 shadow-inner">
+            <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500 w-0"></div>
+        </div>
+    </div>
+
+    <!-- Main Interactive Container -->
+    <main class="max-w-4xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+        <!-- Welcome Screen -->
+        <div id="start-screen" class="glass-card rounded-3xl p-6 sm:p-10 text-center space-y-6">
+            <div class="inline-block p-4 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 mb-1 float-anim">
+                <i class="fa-solid fa-gamepad text-6xl text-indigo-400"></i>
+            </div>
+            
+            <div>
+                <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">¡Laboratorio Interactivo Math Z!</h2>
+                <p class="text-indigo-200 text-sm sm:text-base font-semibold mt-2">
+                    ¡Toma el control! Manipula controles, salta en la recta numérica y opera sin memorizar.
+                </p>
+            </div>
+
+            <!-- Level Previews -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-3xl mx-auto py-2 text-xs">
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-indigo-500/30 flex flex-col items-center gap-1.5">
+                    <i class="fa-solid fa-sliders text-2xl text-cyan-400"></i>
+                    <span class="font-extrabold text-slate-200">1. Medidor Z</span>
+                </div>
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-purple-500/30 flex flex-col items-center gap-1.5">
+                    <i class="fa-solid fa-person-walking text-2xl text-purple-400"></i>
+                    <span class="font-extrabold text-slate-200">2. Salto Recta</span>
+                </div>
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-pink-500/30 flex flex-col items-center gap-1.5">
+                    <i class="fa-solid fa-scale-balanced text-2xl text-pink-400"></i>
+                    <span class="font-extrabold text-slate-200">3. Balanza</span>
+                </div>
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-amber-500/30 flex flex-col items-center gap-1.5">
+                    <i class="fa-solid fa-shapes text-2xl text-amber-400"></i>
+                    <span class="font-extrabold text-slate-200">4. Fichas Z</span>
+                </div>
+                <div class="p-3 bg-slate-800/80 rounded-2xl border border-emerald-500/30 flex flex-col items-center gap-1.5 col-span-2 sm:col-span-1">
+                    <i class="fa-solid fa-satellite text-2xl text-emerald-400"></i>
+                    <span class="font-extrabold text-slate-200">5. Simulador</span>
+                </div>
+            </div>
+
+            <!-- Author Tag -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-950/60 rounded-full border border-indigo-500/30 text-xs text-indigo-300">
+                <i class="fa-solid fa-user-ninja text-amber-400"></i> Creado por: <strong class="text-white">Prof. Jorge Ajquí</strong>
+            </div>
+
+            <br>
+
+            <button onclick="startGame()" class="glow-button px-10 py-5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-black rounded-2xl text-xl flex items-center justify-center gap-3 mx-auto cursor-pointer">
+                <i class="fa-solid fa-play"></i> ¡INICIAR EXPERIMENTO!
+            </button>
+        </div>
+
+        <!-- Interactive Question / Mechanics Screen -->
+        <div id="game-screen" class="hidden glass-card rounded-3xl p-5 sm:p-8 flex flex-col gap-5 relative">
+            
+            <!-- Category Tag & Question Tracker -->
+            <div class="flex justify-between items-center border-b border-slate-700/60 pb-3">
+                <span id="question-category" class="px-3.5 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 rounded-full text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group"></i> Nivel 1
+                </span>
+                <span id="question-tracker" class="text-xs text-slate-300 font-bold bg-slate-800 px-3 py-1 rounded-lg">Desafío 1 de 3</span>
+            </div>
+
+            <!-- Short Instruction Header -->
+            <div class="text-center py-1">
+                <h3 id="question-text" class="text-xl sm:text-2xl font-black text-slate-100 leading-snug">
+                    Ajusta el control interactivo al valor indicado
+                </h3>
+            </div>
+
+            <!-- DYNAMIC INTERACTIVE PLAY AREA -->
+            <div id="interactive-area" class="w-full bg-slate-900/90 rounded-2xl p-5 border border-slate-700/80 flex flex-col items-center justify-center min-h-[260px] relative overflow-hidden">
+                <!-- Injected dynamically based on mechanic type -->
+            </div>
+
+            <!-- Feedback Alert Area -->
+            <div id="feedback-message" class="hidden p-4 rounded-2xl text-center text-sm font-bold transition-all shadow-lg">
+                <!-- Message injected here -->
+            </div>
+
+            <!-- Action / Submit Button Container -->
+            <div id="action-btn-container" class="flex justify-between items-center pt-2">
+                <span id="status-hint" class="text-xs text-indigo-300 font-semibold italic"></span>
+                
+                <button id="submit-btn" onclick="checkInteractiveAnswer()" class="glow-button px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl text-base flex items-center gap-2 cursor-pointer shadow-lg">
+                    <i class="fa-solid fa-check-double"></i> Confirmar Respuesta
+                </button>
+
+                <button id="next-btn" onclick="nextQuestion()" class="hidden glow-button px-8 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-base flex items-center gap-3 cursor-pointer">
+                    Siguiente Reto <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Game Over / Retry -->
+    <div id="game-over-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-3xl p-6 text-center space-y-5 border border-red-500/40">
+            <div class="w-20 h-20 bg-red-500/20 text-red-400 rounded-full flex items-center justify-center mx-auto text-4xl shadow-lg shadow-red-500/30">
+                <i class="fa-solid fa-heart-crack animate-bounce"></i>
+            </div>
+            <h3 class="text-3xl font-black text-white">¡No te rindas!</h3>
+            <p class="text-sm text-slate-300">
+                La práctica hace al maestro. Ajusta tus controles y vuelve a intentarlo.
+            </p>
+            <button onclick="restartGame()" class="glow-button w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-2xl flex items-center justify-center gap-2 text-lg cursor-pointer">
+                <i class="fa-solid fa-rotate-right"></i> Reiniciar Reto
+            </button>
+        </div>
+    </div>
+
+    <!-- Victory & Name Input Modal -->
+    <div id="victory-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-8 text-center space-y-6 border border-amber-500/40">
+            <div class="w-20 h-20 bg-amber-500/20 border border-amber-400/40 text-amber-400 rounded-full flex items-center justify-center mx-auto text-5xl float-anim shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <div>
+                <h3 class="text-3xl font-black text-white">¡Misión Cumplida con Éxito!</h3>
+                <p class="text-indigo-200 text-sm mt-1 font-semibold">
+                    Has completado todos los niveles interactivos de Números Enteros.
+                </p>
+            </div>
+
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700/60 space-y-2">
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-400 font-semibold">Puntaje Logrado:</span>
+                    <span id="final-score" class="font-black text-amber-400 text-lg">0 pts</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span class="text-slate-400 font-semibold">Profesor del Curso:</span>
+                    <span class="font-bold text-indigo-300">Prof. Jorge Ajquí</span>
+                </div>
+            </div>
+
+            <!-- Student Name Input -->
+            <div class="text-left space-y-2">
+                <label for="student-name" class="block text-xs font-bold uppercase text-amber-300">
+                    Escribe tu nombre completo para el certificado oficial:
+                </label>
+                <input type="text" id="student-name" placeholder="Ej. Ana Lucía Gómez" 
+                    class="w-full px-4 py-3.5 bg-slate-900/90 border border-indigo-500/50 rounded-xl text-white font-bold placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400">
+            </div>
+
+            <button onclick="generateCertificate()" class="glow-button w-full py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-slate-950 font-black rounded-2xl text-lg flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-certificate"></i> Extender Certificado
+            </button>
+        </div>
+    </div>
+
+    <!-- Printable Certificate Modal / View -->
+    <div id="certificate-modal" class="hidden fixed inset-0 bg-black/90 z-50 overflow-y-auto p-4 sm:p-8 flex justify-center items-center">
+        <div class="relative w-full max-w-3xl my-auto">
+            
+            <!-- Controls (no print) -->
+            <div class="no-print mb-4 flex flex-wrap justify-between items-center gap-3 bg-slate-800/90 p-4 rounded-2xl border border-slate-700">
+                <button onclick="closeCertificate()" class="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 hover:text-white text-sm font-bold flex items-center gap-2 rounded-xl transition cursor-pointer">
+                    <i class="fa-solid fa-house"></i> Volver al Inicio
+                </button>
+
+                <div class="flex items-center gap-2.5">
+                    <button id="download-img-btn" onclick="downloadCertificateImage()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-sm flex items-center gap-2 shadow-lg transition cursor-pointer">
+                        <i class="fa-solid fa-file-image"></i> Guardar Imagen (PNG)
+                    </button>
+                    <button onclick="window.print()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-xl text-sm flex items-center gap-2 shadow-lg transition cursor-pointer">
+                        <i class="fa-solid fa-print"></i> Imprimir / PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificate Body -->
+            <div class="certificate-container bg-[#fffdf5] text-slate-900 p-8 sm:p-12 rounded-3xl border-[12px] border-double border-amber-700 shadow-2xl relative overflow-hidden">
+                
+                <!-- Corner Ornaments -->
+                <div class="absolute top-4 left-4 text-amber-700/30 text-3xl"><i class="fa-solid fa-award"></i></div>
+                <div class="absolute top-4 right-4 text-amber-700/30 text-3xl"><i class="fa-solid fa-award"></i></div>
+                <div class="absolute bottom-4 left-4 text-amber-700/30 text-3xl"><i class="fa-solid fa-award"></i></div>
+                <div class="absolute bottom-4 right-4 text-amber-700/30 text-3xl"><i class="fa-solid fa-award"></i></div>
+
+                <div class="text-center space-y-4">
+                    <!-- Header -->
+                    <div class="uppercase tracking-widest text-xs font-bold text-amber-800">
+                        RECONOCIMIENTO ACADÉMICO DE MATEMÁTICA
+                    </div>
+                    <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-slate-900 tracking-wide uppercase border-b-2 border-amber-600/40 pb-3 inline-block px-8">
+                        Certificado de Excelencia
+                    </h2>
+
+                    <p class="text-slate-600 text-sm italic pt-2">
+                        Otorgado con orgullo al estudiante:
+                    </p>
+
+                    <!-- Student Name -->
+                    <div id="cert-student-name" class="font-certificate-name text-4xl sm:text-6xl text-indigo-950 py-1 my-1 border-b-2 border-dashed border-amber-500 inline-block min-w-[300px]">
+                        Nombre del Estudiante
+                    </div>
+
+                    <p class="text-slate-700 text-sm max-w-lg mx-auto leading-relaxed">
+                        Por haber demostrado dominio interactivo en el manejo, ubicación, comparación y operaciones con los <strong>Números Enteros</strong>.
+                    </p>
+
+                    <!-- Metrics / Stamp Block -->
+                    <div class="pt-6 grid grid-cols-3 items-center border-t border-slate-200 mt-6">
+                        <div class="text-left text-xs text-slate-600">
+                            <span class="block font-bold text-slate-800">Fecha:</span>
+                            <span id="cert-date">--/--/----</span>
+                        </div>
+
+                        <!-- Seal Icon -->
+                        <div class="flex justify-center">
+                            <div class="w-20 h-20 rounded-full bg-amber-500 text-white flex flex-col items-center justify-center border-4 border-amber-300 shadow-md">
+                                <i class="fa-solid fa-shield-halved text-2xl"></i>
+                                <span class="text-[9px] uppercase font-black tracking-tighter mt-1">APROBADO</span>
+                            </div>
+                        </div>
+
+                        <div class="text-right text-xs text-slate-600">
+                            <span class="block font-bold text-slate-800">Puntaje:</span>
+                            <span id="cert-score" class="text-amber-800 font-extrabold text-base">100 pts</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Signature Line -->
+                    <div class="pt-8 flex justify-around text-xs text-slate-600">
+                        <div class="border-t border-slate-400 pt-1 px-8 text-center">
+                            <strong class="block text-slate-800 text-sm">Prof. Jorge Ajquí</strong>
+                            Docente de Matemática
+                        </div>
+                        <div class="border-t border-slate-400 pt-1 px-8 text-center">
+                            <strong class="block text-slate-800 text-sm">Misión Z Interactivo</strong>
+                            Números Enteros
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ===================================================
+           1. AUDIO SYNTHESIZER (Web Audio API)
+           =================================================== */
+        let soundEnabled = true;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new AudioCtx();
+                } else if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch(e) {
+                console.log("Audio API optional initialization", e);
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            try {
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); 
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); 
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.22); 
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(140, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'step') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'level-up') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.15, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.07 + 0.18);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.18);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio playback error", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-red-400';
+            }
+        }
+
+        /* ===================================================
+           2. INTERACTIVE LEVELS DATA
+           =================================================== */
+        const levelsData = [
+            {
+                level: 1,
+                title: "Nivel 1: Medidor Z Interactivo",
+                category: "Nivel 1: Sintonizador de Signos",
+                type: "slider",
+                questions: [
+                    {
+                        text: "Mueve el medidor para representar: 50 metros BAJO el nivel del mar 🌊",
+                        min: -100, max: 100, step: 10, defaultVal: 0,
+                        targetVal: -50,
+                        unit: "m",
+                        explanation: "Bajo el nivel del mar es una posición negativa (-50m)."
+                    },
+                    {
+                        text: "Ajusta la temperatura a: 8 grados BAJO cero 🥶",
+                        min: -15, max: 15, step: 1, defaultVal: 0,
+                        targetVal: -8,
+                        unit: "°C",
+                        explanation: "Temperaturas bajo cero son siempre negativas (-8°C)."
+                    },
+                    {
+                        text: "Sintoniza el saldo de la cuenta: Una DEUDA de Q120 💳",
+                        min: -200, max: 200, step: 10, defaultVal: 0,
+                        targetVal: -120,
+                        unit: "Q",
+                        explanation: "Las deudas representan saldos en negativo (-Q120)."
+                    }
+                ]
+            },
+            {
+                level: 2,
+                title: "Nivel 2: Salto en la Recta Numérica",
+                category: "Nivel 2: Control de Pasos",
+                type: "numberline_step",
+                questions: [
+                    {
+                        text: "Estás en el punto -3. Da pasos con los botones para avanzar 5 hacia la DERECHA ➡️",
+                        startPos: -3,
+                        targetPos: 2,
+                        explanation: "-3 avanzando 5 a la derecha (+5) da como resultado +2."
+                    },
+                    {
+                        text: "Estás en el punto +2. Retrocede 6 pasos hacia la IZQUIERDA ⬅️",
+                        startPos: 2,
+                        targetPos: -4,
+                        explanation: "+2 retrocediendo 6 a la izquierda (-6) llega al punto -4."
+                    },
+                    {
+                        text: "Ubícate en el número que representa el OPUESTO de -7 🔄",
+                        startPos: 0,
+                        targetPos: 7,
+                        explanation: "El opuesto de -7 es +7 (a la misma distancia del cero)."
+                    }
+                ]
+            },
+            {
+                level: 3,
+                title: "Nivel 3: Balanza de Comparación",
+                category: "Nivel 3: Comparación con Símbolos",
+                type: "balance_symbol",
+                questions: [
+                    {
+                        text: "Compara los números. Selecciona el símbolo correcto (<, >, =) para equilibrar la balanza:",
+                        num1: -8,
+                        num2: -2,
+                        correctSymbol: "<",
+                        explanation: "-8 está más a la izquierda del cero que -2, por eso -8 es MENOR (<) que -2."
+                    },
+                    {
+                        text: "Ajusta el símbolo de comparación entre -1 y -10:",
+                        num1: -1,
+                        num2: -10,
+                        correctSymbol: ">",
+                        explanation: "-1 está más cerca del cero que -10, por lo que -1 es MAYOR (>) que -10."
+                    },
+                    {
+                        text: "Compara la posición de -5 y +3:",
+                        num1: -5,
+                        num2: 3,
+                        correctSymbol: "<",
+                        explanation: "Cualquier número negativo (-5) es siempre MENOR (<) que uno positivo (+3)."
+                    }
+                ]
+            },
+            {
+                level: 4,
+                title: "Nivel 4: Laboratorio de Fichas Z",
+                category: "Nivel 4: Suma y Resta con Fichas",
+                type: "chips_lab",
+                questions: [
+                    {
+                        text: "Representa con fichas la operación (-4) + (+6). Agrega fichas rojas y azules para obtener el resultado.",
+                        targetValue: 2,
+                        explanation: "Al juntar 4 fichas rojas (-4) y 6 fichas azules (+6), 4 de cada una se cancelan y quedan 2 fichas azules (+2)."
+                    },
+                    {
+                        text: "Representa con fichas la operación (-5) + (-2). Agrega las fichas correspondientes.",
+                        targetValue: -7,
+                        explanation: "Fichas del mismo signo se acumulan: 5 fichas rojas y 2 fichas rojas dan un total de 7 fichas rojas (-7)."
+                    },
+                    {
+                        text: "Representa con fichas la operación (+3) - (+8). ¿Cuál es el resultado final?",
+                        targetValue: -5,
+                        explanation: "+3 quitándole 8 equivale a juntar 3 fichas azules con 8 fichas rojas, resultando en 5 fichas rojas (-5)."
+                    }
+                ]
+            },
+            {
+                level: 5,
+                title: "Nivel 5: Simulador Misión Final",
+                category: "Nivel 5: Control del Entorno",
+                type: "simulator",
+                questions: [
+                    {
+                        text: "Un buzo está a -12m. Usando las palancas, haz que SUBAN 5m y luego BAJEN 8m. ¿En qué nivel queda?",
+                        initialVal: -12,
+                        moves: [ {label: "Subir 5m", val: 5}, {label: "Bajar 8m", val: -8} ],
+                        targetPos: -15,
+                        explanation: "-12 + 5 = -7m, y luego -7 - 8 = -15m."
+                    },
+                    {
+                        text: "La temperatura era de -6 °C. Subió 10 °C y luego descendió 3 °C. Ajusta la temperatura final:",
+                        initialVal: -6,
+                        moves: [ {label: "Subió 10°C", val: 10}, {label: "Bajó 3°C", val: -3} ],
+                        targetPos: 1,
+                        explanation: "-6 + 10 = +4°C, y luego +4 - 3 = +1°C."
+                    }
+                ]
+            }
+        ];
+
+        /* ===================================================
+           3. GAME ENGINE AND STATE CONTROL
+           =================================================== */
+        let currentLevelIdx = 0;
+        let currentQuestionIdx = 0;
+        let score = 0;
+        let lives = 3;
+        let answeredCurrent = false;
+
+        // Interactive states
+        let userCurrentPos = 0;
+        let userSymbolSelected = "";
+        let userChipsCount = 0;
+        let userPosChipsCount = 0;
+        let userNegChipsCount = 0;
+
+        function updateUI() {
+            document.getElementById('level-indicator').innerText = `${currentLevelIdx + 1} / ${levelsData.length}`;
+            document.getElementById('score-display').innerText = score;
+
+            // Lives
+            const livesContainer = document.getElementById('lives-container');
+            livesContainer.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                if (i < lives) {
+                    livesContainer.innerHTML += '<i class="fa-solid fa-heart heart-bounce"></i>';
+                } else {
+                    livesContainer.innerHTML += '<i class="fa-regular fa-heart text-slate-600"></i>';
+                }
+            }
+
+            // Progress Bar Calculation
+            const totalQuestions = levelsData.reduce((acc, l) => acc + l.questions.length, 0);
+            let prevQuestions = 0;
+            for (let i = 0; i < currentLevelIdx; i++) {
+                prevQuestions += levelsData[i].questions.length;
+            }
+            const currentTotal = prevQuestions + currentQuestionIdx;
+            const percent = Math.round((currentTotal / totalQuestions) * 100);
+            
+            document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+        }
+
+        function startGame() {
+            initAudio();
+            currentLevelIdx = 0;
+            currentQuestionIdx = 0;
+            score = 0;
+            lives = 3;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function restartGame() {
+            document.getElementById('game-over-modal').classList.add('hidden');
+            startGame();
+        }
+
+        function loadQuestion() {
+            answeredCurrent = false;
+            updateUI();
+
+            const level = levelsData[currentLevelIdx];
+            const q = level.questions[currentQuestionIdx];
+
+            document.getElementById('question-category').innerHTML = `<i class="fa-solid fa-layer-group"></i> ${level.category}`;
+            document.getElementById('question-tracker').innerText = `Desafío ${currentQuestionIdx + 1} de ${level.questions.length}`;
+            document.getElementById('question-text').innerText = q.text;
+
+            // Reset UI states
+            document.getElementById('feedback-message').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('status-hint').innerText = "Manipula el control y presiona Confirmar.";
+
+            const container = document.getElementById('interactive-area');
+            container.innerHTML = '';
+
+            // Inject mechanic view
+            if (level.type === 'slider') {
+                renderSliderMechanic(container, q);
+            } else if (level.type === 'numberline_step') {
+                renderNumberlineMechanic(container, q);
+            } else if (level.type === 'balance_symbol') {
+                renderBalanceMechanic(container, q);
+            } else if (level.type === 'chips_lab') {
+                renderChipsMechanic(container, q);
+            } else if (level.type === 'simulator') {
+                renderSimulatorMechanic(container, q);
+            }
+        }
+
+        function renderSliderMechanic(container, q) {
+            userCurrentPos = q.defaultVal;
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-6 w-full max-w-md">
+                    <div class="text-5xl font-black text-amber-400 bg-slate-950/80 px-8 py-4 rounded-2xl border border-amber-500/30 shadow-inner flex items-center gap-2">
+                        <span id="slider-display">${userCurrentPos > 0 ? '+' + userCurrentPos : userCurrentPos}</span>
+                        <span class="text-xl text-slate-400 font-normal">${q.unit || ''}</span>
+                    </div>
+
+                    <div class="w-full space-y-2">
+                        <input type="range" id="interactive-range" min="${q.min}" max="${q.max}" step="${q.step}" value="${q.defaultVal}" 
+                            class="w-full cursor-pointer" oninput="updateSliderVal(this.value, '${q.unit || ''}')">
+                        <div class="flex justify-between text-xs font-bold text-slate-400 px-1">
+                            <span>${q.min} ${q.unit || ''}</span>
+                            <span>0 ${q.unit || ''}</span>
+                            <span>+${q.max} ${q.unit || ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateSliderVal(val, unit) {
+            userCurrentPos = parseInt(val);
+            playSound('step');
+            document.getElementById('slider-display').innerText = userCurrentPos > 0 ? `+${userCurrentPos}` : `${userCurrentPos}`;
+        }
+
+        function renderNumberlineMechanic(container, q) {
+            userCurrentPos = q.startPos;
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-4 w-full">
+                    <canvas id="line-canvas" width="650" height="110" class="max-w-full rounded-xl bg-slate-950 p-2 border border-slate-800"></canvas>
+                    
+                    <div class="flex items-center gap-4 mt-2 flex-wrap justify-center">
+                        <button onclick="moveStep(-1)" class="ctrl-btn px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold rounded-xl flex items-center gap-2 text-base cursor-pointer">
+                            <i class="fa-solid fa-arrow-left"></i> Izquierda (-1)
+                        </button>
+
+                        <div class="px-5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-center">
+                            <span class="text-xs uppercase font-bold text-slate-400 block">Posición Actual</span>
+                            <span id="pos-display" class="font-black text-amber-400 text-xl">${userCurrentPos > 0 ? '+' + userCurrentPos : userCurrentPos}</span>
+                        </div>
+
+                        <button onclick="moveStep(1)" class="ctrl-btn px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold rounded-xl flex items-center gap-2 text-base cursor-pointer">
+                            Derecha (+1) <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => drawCanvasLine(q.startPos, userCurrentPos), 50);
+        }
+
+        function moveStep(delta) {
+            if (answeredCurrent) return;
+            userCurrentPos += delta;
+            playSound('step');
+            document.getElementById('pos-display').innerText = userCurrentPos > 0 ? `+${userCurrentPos}` : `${userCurrentPos}`;
+            drawCanvasLine(levelsData[currentLevelIdx].questions[currentQuestionIdx].startPos, userCurrentPos);
+        }
+
+        function drawCanvasLine(startPos, currentPos) {
+            const canvas = document.getElementById('line-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const minVal = -10;
+            const maxVal = 10;
+            const startX = 40;
+            const endX = canvas.width - 40;
+            const centerY = 55;
+            const stepWidth = (endX - startX) / (maxVal - minVal);
+
+            // Line
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(startX - 15, centerY);
+            ctx.lineTo(endX + 15, centerY);
+            ctx.stroke();
+
+            // Ticks
+            for (let i = minVal; i <= maxVal; i++) {
+                const x = startX + (i - minVal) * stepWidth;
+                ctx.beginPath();
+                ctx.strokeStyle = i === 0 ? '#f59e0b' : '#475569';
+                ctx.lineWidth = i === 0 ? 3 : 1.5;
+                ctx.moveTo(x, centerY - 10);
+                ctx.lineTo(x, centerY + 10);
+                ctx.stroke();
+
+                ctx.fillStyle = i === 0 ? '#f59e0b' : '#94a3b8';
+                ctx.font = 'bold 12px Outfit, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(i > 0 ? `+${i}` : `${i}`, x, centerY + 28);
+            }
+
+            // Current player dot
+            const currX = startX + (Math.max(minVal, Math.min(maxVal, currentPos)) - minVal) * stepWidth;
+            ctx.fillStyle = '#6366f1';
+            ctx.beginPath();
+            ctx.arc(currX, centerY, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function renderBalanceMechanic(container, q) {
+            userSymbolSelected = "?";
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-6">
+                    <div class="flex items-center gap-6 sm:gap-10 bg-slate-950/80 p-6 rounded-3xl border border-slate-800 shadow-xl">
+                        <div class="text-4xl sm:text-5xl font-black text-cyan-400 bg-slate-800 px-6 py-4 rounded-2xl border border-cyan-500/30">
+                            ${q.num1 > 0 ? '+' + q.num1 : q.num1}
+                        </div>
+
+                        <div id="symbol-box" class="w-16 h-16 sm:w-20 sm:h-20 bg-amber-500/20 text-amber-400 text-4xl sm:text-5xl font-black rounded-2xl border-2 border-dashed border-amber-400 flex items-center justify-center shadow-lg">
+                            ?
+                        </div>
+
+                        <div class="text-4xl sm:text-5xl font-black text-emerald-400 bg-slate-800 px-6 py-4 rounded-2xl border border-emerald-500/30">
+                            ${q.num2 > 0 ? '+' + q.num2 : q.num2}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+                        <button onclick="selectSymbol('<')" class="ctrl-btn px-5 sm:px-6 py-3 bg-slate-800 hover:bg-amber-500/20 text-amber-300 font-black text-xl sm:text-2xl rounded-2xl border border-amber-500/40 cursor-pointer">
+                            &lt; (Menor)
+                        </button>
+                        <button onclick="selectSymbol('=')" class="ctrl-btn px-5 sm:px-6 py-3 bg-slate-800 hover:bg-amber-500/20 text-amber-300 font-black text-xl sm:text-2xl rounded-2xl border border-amber-500/40 cursor-pointer">
+                            = (Igual)
+                        </button>
+                        <button onclick="selectSymbol('>')" class="ctrl-btn px-5 sm:px-6 py-3 bg-slate-800 hover:bg-amber-500/20 text-amber-300 font-black text-xl sm:text-2xl rounded-2xl border border-amber-500/40 cursor-pointer">
+                            &gt; (Mayor)
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectSymbol(sym) {
+            if (answeredCurrent) return;
+            userSymbolSelected = sym;
+            playSound('step');
+            const box = document.getElementById('symbol-box');
+            if (box) {
+                box.innerText = sym;
+                box.classList.remove('bg-amber-500/20', 'border-dashed');
+                box.classList.add('bg-amber-500', 'text-slate-950', 'border-solid');
+            }
+        }
+
+        function renderChipsMechanic(container, q) {
+            userPosChipsCount = 0;
+            userNegChipsCount = 0;
+            userChipsCount = 0;
+
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-5 w-full">
+                    <div class="flex flex-wrap justify-center gap-2 p-4 bg-slate-950/80 rounded-2xl border border-slate-800 min-h-[110px] w-full max-w-md items-center" id="chips-container">
+                        <!-- Fichas se renderizan dinámicamente -->
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 justify-center">
+                        <!-- Fichas Positivas Azules -->
+                        <div class="flex items-center gap-1.5 bg-blue-950/40 p-1.5 rounded-2xl border border-blue-500/30">
+                            <button onclick="adjustPosChip(1)" class="ctrl-btn px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl flex items-center gap-1 text-xs sm:text-sm cursor-pointer shadow">
+                                <i class="fa-solid fa-plus"></i> Azul (+1)
+                            </button>
+                            <button onclick="adjustPosChip(-1)" class="ctrl-btn px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-blue-300 font-bold rounded-xl border border-blue-500/30 text-xs cursor-pointer" title="Quitar 1 azul">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                        </div>
+
+                        <!-- Resultado Neto -->
+                        <div class="px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-center min-w-[110px]">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block">Resultado</span>
+                            <span id="chips-val-display" class="font-black text-amber-400 text-lg">0</span>
+                        </div>
+
+                        <!-- Fichas Negativas Rojas -->
+                        <div class="flex items-center gap-1.5 bg-red-950/40 p-1.5 rounded-2xl border border-red-500/30">
+                            <button onclick="adjustNegChip(1)" class="ctrl-btn px-3 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl flex items-center gap-1 text-xs sm:text-sm cursor-pointer shadow">
+                                <i class="fa-solid fa-plus"></i> Roja (-1)
+                            </button>
+                            <button onclick="adjustNegChip(-1)" class="ctrl-btn px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-red-300 font-bold rounded-xl border border-red-500/30 text-xs cursor-pointer" title="Quitar 1 roja">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                        </div>
+
+                        <!-- Botón Reiniciar / Limpiar Fichas -->
+                        <button onclick="resetChips()" class="ctrl-btn px-3 py-2 bg-amber-600/20 hover:bg-amber-600/40 text-amber-300 font-extrabold rounded-xl border border-amber-500/40 text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer shadow" title="Borrar todas las fichas">
+                            <i class="fa-solid fa-rotate-left"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            `;
+            renderChipsVisual(0, 0);
+        }
+
+        function adjustPosChip(delta) {
+            if (answeredCurrent) return;
+            userPosChipsCount = Math.max(0, userPosChipsCount + delta);
+            userChipsCount = userPosChipsCount - userNegChipsCount;
+            playSound('step');
+            document.getElementById('chips-val-display').innerText = userChipsCount > 0 ? `+${userChipsCount}` : `${userChipsCount}`;
+            renderChipsVisual(userPosChipsCount, userNegChipsCount);
+        }
+
+        function adjustNegChip(delta) {
+            if (answeredCurrent) return;
+            userNegChipsCount = Math.max(0, userNegChipsCount + delta);
+            userChipsCount = userPosChipsCount - userNegChipsCount;
+            playSound('step');
+            document.getElementById('chips-val-display').innerText = userChipsCount > 0 ? `+${userChipsCount}` : `${userChipsCount}`;
+            renderChipsVisual(userPosChipsCount, userNegChipsCount);
+        }
+
+        function resetChips() {
+            if (answeredCurrent) return;
+            userPosChipsCount = 0;
+            userNegChipsCount = 0;
+            userChipsCount = 0;
+            playSound('step');
+            document.getElementById('chips-val-display').innerText = '0';
+            renderChipsVisual(0, 0);
+        }
+
+        function renderChipsVisual(posCount, negCount) {
+            const container = document.getElementById('chips-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            for (let i = 0; i < posCount; i++) {
+                container.innerHTML += `<div class="w-9 h-9 rounded-full bg-blue-600 text-white font-black text-sm flex items-center justify-center border-2 border-blue-300 shadow-md transition-transform transform scale-105">+1</div>`;
+            }
+            for (let i = 0; i < negCount; i++) {
+                container.innerHTML += `<div class="w-9 h-9 rounded-full bg-red-600 text-white font-black text-sm flex items-center justify-center border-2 border-red-300 shadow-md transition-transform transform scale-105">-1</div>`;
+            }
+            if (posCount === 0 && negCount === 0) {
+                container.innerHTML = `<span class="text-xs text-slate-400 font-bold italic text-center">Usa los botones para agregar fichas azules (+1) y rojas (-1)</span>`;
+            }
+        }
+
+        function renderSimulatorMechanic(container, q) {
+            userCurrentPos = q.initialVal;
+            container.innerHTML = `
+                <div class="flex flex-col items-center gap-6 w-full max-w-md">
+                    <div class="text-4xl font-black text-indigo-300 bg-slate-950/90 px-8 py-4 rounded-2xl border border-indigo-500/40 text-center">
+                        <span class="text-xs uppercase text-slate-400 font-bold block mb-1">Nivel / Indicador Final</span>
+                        <span id="sim-display" class="text-amber-400">${userCurrentPos > 0 ? '+' + userCurrentPos : userCurrentPos}</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 justify-center w-full">
+                        ${q.moves.map((m) => `
+                            <button onclick="applySimMove(${m.val})" class="ctrl-btn px-5 py-3 bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 font-black rounded-xl border border-indigo-500/40 text-sm flex items-center gap-2 cursor-pointer">
+                                <i class="fa-solid fa-gamepad text-amber-400"></i> ${m.label} (${m.val > 0 ? '+' + m.val : m.val})
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function applySimMove(delta) {
+            if (answeredCurrent) return;
+            userCurrentPos += delta;
+            playSound('step');
+            document.getElementById('sim-display').innerText = userCurrentPos > 0 ? `+${userCurrentPos}` : `${userCurrentPos}`;
+        }
+
+        function checkInteractiveAnswer() {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+
+            const level = levelsData[currentLevelIdx];
+            const q = level.questions[currentQuestionIdx];
+            const feedback = document.getElementById('feedback-message');
+            let isCorrect = false;
+
+            if (level.type === 'slider') {
+                isCorrect = (userCurrentPos === q.targetVal);
+            } else if (level.type === 'numberline_step') {
+                isCorrect = (userCurrentPos === q.targetPos);
+            } else if (level.type === 'balance_symbol') {
+                isCorrect = (userSymbolSelected === q.correctSymbol);
+            } else if (level.type === 'chips_lab') {
+                isCorrect = (userChipsCount === q.targetValue);
+            } else if (level.type === 'simulator') {
+                isCorrect = (userCurrentPos === q.targetPos);
+            }
+
+            if (isCorrect) {
+                playSound('correct');
+                score += 100;
+                feedback.className = "p-4 rounded-2xl text-center text-sm font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/50 shadow-lg shadow-emerald-950/50";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2 text-lg"></i> <strong>¡EXCELENTE TRABAJO!</strong> ${q.explanation}`;
+            } else {
+                playSound('wrong');
+                lives--;
+                feedback.className = "p-4 rounded-2xl text-center text-sm font-bold bg-red-950/80 text-red-300 border border-red-500/50 shadow-lg shadow-red-950/50";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-400 mr-2 text-lg"></i> <strong>¡INTÉNTALO DE NUEVO!</strong> ${q.explanation}`;
+            }
+
+            feedback.classList.remove('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            updateUI();
+
+            if (lives <= 0) {
+                setTimeout(() => {
+                    document.getElementById('game-over-modal').classList.remove('hidden');
+                }, 700);
+            }
+        }
+
+        function nextQuestion() {
+            const level = levelsData[currentLevelIdx];
+            if (currentQuestionIdx + 1 < level.questions.length) {
+                currentQuestionIdx++;
+                loadQuestion();
+            } else {
+                if (currentLevelIdx + 1 < levelsData.length) {
+                    currentLevelIdx++;
+                    currentQuestionIdx = 0;
+                    playSound('level-up');
+                    try { confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } }); } catch(e){}
+                    loadQuestion();
+                } else {
+                    showVictoryScreen();
+                }
+            }
+        }
+
+        function showVictoryScreen() {
+            playSound('level-up');
+            try { confetti({ particleCount: 160, spread: 90, origin: { y: 0.5 } }); } catch(e){}
+
+            document.getElementById('final-score').innerText = `${score} pts`;
+            document.getElementById('victory-modal').classList.remove('hidden');
+        }
+
+        function generateCertificate() {
+            const inputName = document.getElementById('student-name').value.trim();
+            const certName = inputName !== "" ? inputName : "Estudiante Destacado";
+
+            document.getElementById('cert-student-name').innerText = certName;
+            document.getElementById('cert-score').innerText = `${score} pts`;
+
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('cert-date').innerText = dateStr;
+
+            document.getElementById('victory-modal').classList.add('hidden');
+            document.getElementById('certificate-modal').classList.remove('hidden');
+            
+            try { confetti({ particleCount: 120, spread: 100, origin: { y: 0.4 } }); } catch(e){}
+        }
+
+        function downloadCertificateImage() {
+            const certContainer = document.querySelector('.certificate-container');
+            if (!certContainer) return;
+
+            const btn = document.getElementById('download-img-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando imagen...';
+            btn.disabled = true;
+
+            html2canvas(certContainer, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#fffdf5'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const name = document.getElementById('cert-student-name').innerText.trim() || 'Estudiante';
+                const cleanName = name.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]/g, '_');
+                link.download = `Certificado_Mision_Z_${cleanName}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(err => {
+                console.error('Error generando certificado:', err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        }
+
+        function closeCertificate() {
+            document.getElementById('certificate-modal').classList.add('hidden');
+            document.getElementById('victory-modal').classList.add('hidden');
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+
+            // Reiniciar estado del juego
+            currentLevelIdx = 0;
+            currentQuestionIdx = 0;
+            score = 0;
+            lives = 3;
+            updateUI();
+        }
+    </script>
+</body>
+</html>
